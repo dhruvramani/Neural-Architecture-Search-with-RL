@@ -30,3 +30,6 @@ def tanh_init(shape, dtype=tf.float32, partition_info=None):
 
 def leaky_relu(X, alpha=0.01):
     return tf.maximum(X, alpha * X)
+
+def max(input):
+    return tf.argmax(input)

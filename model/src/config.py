@@ -10,7 +10,7 @@ class Config(object):
         self.dataset_name = args.dataset
         self.batch_size = args.batch_size
         self.max_epochs = args.max_epochs
-
+        self.hyperparams = args.hyperparams
         class Solver(object):
             def __init__(self, t_args):
                 self.learning_rate = t_args.lr
@@ -22,14 +22,14 @@ class Config(object):
         
         self.solver = Solver(args)
         self.project_path, self.project_prefix_path, self.dataset_path, self.train_path, self.test_path, self.ckptdir_path = self.set_paths()
-        
+
 
     def set_paths(self):
         project_path = utils.path_exists(self.codebase_root_path)
         project_prefix_path = "" #utils.path_exists(os.path.join(self.codebase_root_path, self.project_name, self.folder_suffix))
         dataset_path = utils.path_exists(os.path.join(self.codebase_root_path, "../data", self.dataset_name))
         ckptdir_path = utils.path_exists(os.path.join(self.codebase_root_path, "bin"))
-        train_path = os.path.join(dataset_path, self.dataset_name + "-train")
-        test_path = os.path.join(dataset_path, self.dataset_name + "-test")
+        train_path = os.path.join(dataset_path, "data_batch_")
+        test_path = os.path.join(dataset_path, "test_batch")
 
         return project_path, project_prefix_path, dataset_path, train_path, test_path, ckptdir_path
