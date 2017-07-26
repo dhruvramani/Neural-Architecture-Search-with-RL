@@ -57,5 +57,17 @@ class Network(object):
         convlove = tf.nn.bias_add(convlove, self.bconv)
         reshaped = tf.reshape(convlove, [self.config.batch_size, 32*32*3])
         fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.Wf1), self.config.solver.dropout)
-        output = tf.nn.softmax(tf.matmul(fc, self.Wf2)+ self.bf2)
+        output = tf.matmul(fc, self.Wf2)+ self.bf2
         return output
+
+    def model_loss(self, logits, labels):
+        return tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels)
+
+    def train_model(self, loss):
+        optimizer = self.config.optimizer
+        var_list = [ self.Wconv, self.bconv, self.Wf1, self.bf1, self.Wf2, self.bf2]
+        return optimizer(self.config.solver.learning_rate).minimize(loss, var_list=var_list)
+
+    def REINFORCE(self, val_loss):
+        reinforce = (1-loss)
+        return 
