@@ -8,6 +8,7 @@ class Network(object):
         self.config = config
         self.n_steps = self.config.hyperparams
         self.n_input, self.n_hidden =  4, 20
+        self.lstm = tf.contrb.rnn.BasicLSTMCell(self.n_hidden)
         self.Wc, self.bc = self.init_controller_vars()
         self.Wconv, self.bconv, self.Wf1, self.bf1, self.Wf2, self.bf2 = None, None, None, None, None, None
     
@@ -25,14 +26,13 @@ class Network(object):
     def neural_search(self):
         state = tf.Variable(tf.zeros(shape=[4]))
         inp = tf.Variable(tf.random_normal(shape=[4]))
-        lstm = tf.contrb.rnn.BasicLSTMCell(self.n_hidden)
         output = list()
         for _ in n_steps:
-            inp, state = lstm(inp, state)
+            inp, state = self.lstm(inp, state)
             inp = tf.nn.softmax(tf.matmul(inp, self.Wc) + self.bc)
             output.append(inp)
-        output = [utils.max(output[0]), utils.max(output[1]), utils.max(output[2]), utils.max(output[3]), utils.max(output[4]), utils.max(output[5])]
-        return output
+        out = [utils.max(output[0]), utils.max(output[1]), utils.max(output[2]), utils.max(output[3]), utils.max(output[4]), utils.max(output[5])]
+        return out, output[-1]
 
     def gen_hyperparams(self, output):
         filter_dims = tf.constant([1, 3, 5, 7], dtype=tf.int32)
@@ -41,7 +41,7 @@ class Network(object):
         hyperparams = {"filter_row": filter_dims[output[0]], "filter_column": filter_dims[output[1]], "stride_height": strides[output[2]], "stride_width": strides[output[3]], "n_filter": n_filters[output[4]], "n_autoneurons": n_filters[output[5]]}
         return hyperparams
 
-    def construct_model(self, data, hyperparams):
+    def construct_model(self, data, hyperparams, keep_prob):
         # Current DATA : batch_size, 3072
         data = tf.expand_dims(data, -1)
         data = tf.expand_dims(data, -1)
@@ -56,18 +56,28 @@ class Network(object):
         convlove = tf.nn.conv2d(images, self.Wconv, strides=[1, hyperparams["stride_height"], 1], padding="SAME")
         convlove = tf.nn.bias_add(convlove, self.bconv)
         reshaped = tf.reshape(convlove, [self.config.batch_size, 32*32*3])
-        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.Wf1), self.config.solver.dropout)
+        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.Wf1), keep_prob)
         output = tf.matmul(fc, self.Wf2)+ self.bf2
         return output
 
     def model_loss(self, logits, labels):
-        return tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels)
+        return -1 * tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
 
     def train_model(self, loss):
         optimizer = self.config.optimizer
-        var_list = [ self.Wconv, self.bconv, self.Wf1, self.bf1, self.Wf2, self.bf2]
+        var_list = [self.Wconv, self.bconv, self.Wf1, self.bf1, self.Wf2, self.bf2]
         return optimizer(self.config.solver.learning_rate).minimize(loss, var_list=var_list)
 
-    def REINFORCE(self, val_loss):
-        reinforce = (1-loss)
-        return 
+    def accuracy(self, logits, labels):
+        return tf.reduce_mean(tf.cast(tf.equal(utils.max(logits), utils.max(labels)), tf.float32))
+
+    def train_controller(self, reinforce_loss)
+        optimizer = self.config.optimizer
+        var_list = [self.Wc, self.bc]
+        return optimizer(self.config.solver.learning_rate).minimize(-reinforce_loss) # Minimizing negative of a loss maximizes it!
+
+    # Refer https://github.com/awjuliani/DeepRL-Agents/blob/master/Vanilla-Policy.ipynb
+    # to implement REINFORCE
+    def REINFORCE(self, val_accuracy, prob):
+        loss = tf.reduce_mean(val_accuracy * tf.log(prob))
+        return loss

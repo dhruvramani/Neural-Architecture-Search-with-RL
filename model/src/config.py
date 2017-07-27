@@ -23,12 +23,11 @@ class Config(object):
         self.solver = Solver(args)
         self.project_path, self.project_prefix_path, self.dataset_path, self.train_path, self.test_path, self.ckptdir_path = self.set_paths()
 
-
     def set_paths(self):
         project_path = utils.path_exists(self.codebase_root_path)
         project_prefix_path = "" #utils.path_exists(os.path.join(self.codebase_root_path, self.project_name, self.folder_suffix))
         dataset_path = utils.path_exists(os.path.join(self.codebase_root_path, "../data", self.dataset_name))
-        ckptdir_path = utils.path_exists(os.path.join(self.codebase_root_path, "bin"))
+        ckptdir_path = utils.path_exists(os.path.join(self.codebase_root_path, "checkpoint"))
         train_path = os.path.join(dataset_path, "data_batch_")
         test_path = os.path.join(dataset_path, "test_batch")
 
