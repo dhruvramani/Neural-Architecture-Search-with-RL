@@ -1,4 +1,4 @@
-# DQN, Double DQN, A3C, action conditional video predictions, AlphaGo
+# Useless File
 import sys
 import numpy as np
 from collections import Counter
