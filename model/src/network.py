@@ -76,6 +76,21 @@ class Network(object):
         var_list = [self.Wc, self.bc]
         return optimizer(self.config.solver.learning_rate).minimize(-reinforce_loss) # Minimizing negative of a loss maximizes it!
 
+    '''
+          # compute policy loss and regularization loss
+      self.cross_entropy_loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logprobs, labels=self.taken_actions)
+      self.pg_loss            = tf.reduce_mean(self.cross_entropy_loss)
+      self.reg_loss           = tf.reduce_sum([tf.reduce_sum(tf.square(x)) for x in policy_network_variables])
+      self.loss               = self.pg_loss + self.reg_param * self.reg_loss
+
+      # compute gradients
+      self.gradients = self.optimizer.compute_gradients(self.loss)
+
+      # compute policy gradients
+      for i, (grad, var) in enumerate(self.gradients):
+        if grad is not None:
+          self.gradients[i] = (grad * self.discounted_rewards, var)
+    '''
     # Refer https://github.com/awjuliani/DeepRL-Agents/blob/master/Vanilla-Policy.ipynb
     # to implement REINFORCE
     def REINFORCE(self, val_accuracy, prob):
