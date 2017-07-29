@@ -7,14 +7,14 @@ class Parser(object):
         parser.add_argument("--project", default="NASuRL", help="Project Folder")
         parser.add_argument("--folder_suffix", default="Default", help="Folder Name Suffix")
         parser.add_argument("--dataset", default="cifar-10", help="Name of the Dataset")
-        parser.add_argument("--opt", default="adam", help="Optimizer : adam, rmsprop, sgd")
+        parser.add_argument("--opt", default="normal", help="Optimizer : adam, rmsprop, sgd")
         parser.add_argument("--hyperparams", default=6, help="Number of Hyperparameters to search")
-        parser.add_argument("--lr", default=0.001, help="Learning Rate", type=float)
+        parser.add_argument("--lr", default=0.0006, help="Learning Rate", type=float)
         parser.add_argument("--batch_size", default=1000, help="Batch Size", type=int)
         parser.add_argument("--dropout", default=0.5, help="Dropout Probab. for Pre-Final Layer", type=float)
         parser.add_argument("--max_epochs", default=100, help="Maximum Number of Epochs", type=int)
         parser.add_argument("--debug", default=False, type=self.str_to_bool, help="Debug Mode")
-        parser.add_argument("--load", default =False, type=self.str_to_bool, help="Load Model to calculate accuracy")
+        parser.add_argument("--load", default=False, type=self.str_to_bool, help="Load Model to calculate accuracy")
         self.parser=parser
 
     def str_to_bool(self, string):

@@ -19,8 +19,8 @@ class Network(object):
         return tf.Variable(tf.constant(0.1, shape=shape), name=name)
 
     def init_controller_vars(self):
-        Wc = weight_variable(shape=[self.n_hidden, self.n_input], name="w_controller")
-        bc = bias_variable(shape=[self.n_input], name="b_controller")
+        Wc = self.weight_variable(shape=[self.n_hidden, self.n_input], name="w_controller")
+        bc = self.bias_variable(shape=[self.n_input], name="b_controller")
         return Wc, bc
 
     def neural_search(self):
@@ -46,7 +46,6 @@ class Network(object):
         data = tf.expand_dims(data, -1)
         data = tf.expand_dims(data, -1)
         images = tf.reshape(data, [self.config.batch_size, 32, 32, 3])
-        
         self.Wconv = weight_variable(shape=[hyperparams["filter_row"], hyperparams["filter_column"], 3, hyperparams["n_filter"]], name="kernel")
         self.bconv = tf.Variable(tf.random_normal(shape=hyperparams["n_filter"]), name="b_conv")
         self.Wf1 = weight_variable(shape=[32*32*3, hyperparams["n_autoneurons"]], "w_fc1")
@@ -64,35 +63,22 @@ class Network(object):
         return -1 * tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
 
     def train_model(self, loss):
-        optimizer = self.config.optimizer
+        optimizer = self.config.solver.optimizer
         var_list = [self.Wconv, self.bconv, self.Wf1, self.bf1, self.Wf2, self.bf2]
         return optimizer(self.config.solver.learning_rate).minimize(loss, var_list=var_list)
 
     def accuracy(self, logits, labels):
         return tf.reduce_mean(tf.cast(tf.equal(utils.max(logits), utils.max(labels)), tf.float32))
 
-    def train_controller(self, reinforce_loss)
-        optimizer = self.config.optimizer
+    def train_controller(self, reinforce_loss, val_accuracy)
+        optimizer = self.config.solver.optimizer
         var_list = [self.Wc, self.bc]
-        return optimizer(self.config.solver.learning_rate).minimize(-reinforce_loss) # Minimizing negative of a loss maximizes it!
+        gradients = optimizer.compute_gradients(reinforce_loss, var_list=var_list)
+        for i, (grad, var) in enumerate(gradients):
+            if grad is not None:
+                gradients[i] = (grad * val_accuracy, var)
+        return optimizer.apply_gradients(gradients)
 
-    '''
-          # compute policy loss and regularization loss
-      self.cross_entropy_loss = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logprobs, labels=self.taken_actions)
-      self.pg_loss            = tf.reduce_mean(self.cross_entropy_loss)
-      self.reg_loss           = tf.reduce_sum([tf.reduce_sum(tf.square(x)) for x in policy_network_variables])
-      self.loss               = self.pg_loss + self.reg_param * self.reg_loss
-
-      # compute gradients
-      self.gradients = self.optimizer.compute_gradients(self.loss)
-
-      # compute policy gradients
-      for i, (grad, var) in enumerate(self.gradients):
-        if grad is not None:
-          self.gradients[i] = (grad * self.discounted_rewards, var)
-    '''
-    # Refer https://github.com/awjuliani/DeepRL-Agents/blob/master/Vanilla-Policy.ipynb
-    # to implement REINFORCE
-    def REINFORCE(self, val_accuracy, prob):
-        loss = tf.reduce_mean(val_accuracy * tf.log(prob))
+    def REINFORCE(self, prob):
+        loss = tf.reduce_mean(tf.log(prob)) # Might have to take the negative
         return loss

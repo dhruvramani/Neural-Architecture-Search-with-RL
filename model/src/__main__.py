@@ -15,6 +15,7 @@ class Model(object):
         self.add_placeholders()
         self.summarizer = tf.summary
         self.net = Network(config)
+        self.saver = tf.train.Saver()
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
@@ -22,8 +23,10 @@ class Model(object):
         self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
         self.tr_model_step = self.net.train_model(self.cross_loss)
         self.accuracy = self.net.accuracy(self.y_pred, self.Y)
-        self.reinforce_loss = self.net.REINFORCE(self.val_accuracy, self.prob)
-        self.tr_cont_step = self.net.train_controller(self.reinforce_loss)
+        self.reinforce_loss = self.net.REINFORCE(self.prob)
+        self.tr_cont_step = self.net.train_controller(self.reinforce_loss, self.val_accuracy)
+        self.init = tf.global_variables_initializer()
+        self.local_init = tf.local_variables_initializer()
 
     def add_placeholders(self):
         self.X = tf.placeholder(tf.float32, shape=[None, 3072])
@@ -49,16 +52,16 @@ class Model(object):
         return np.mean(err), step
 
     def run_model_eval(self, sess, data="validation", summary_writer=None, step=0):
-        y, y_pred, loss_, loss, i, acc, accuracy = list(), list(), 0.0, 0.0, 0, 0.0, 0.0
+        y, y_pred, loss_, loss, i, acc, accuracy = list(), list(), 0.0, 0.0, 0, 0.0, list()
         merged_summary = self.summarizer.merge_all()
         for X, Y, tot in self.data.next_batch(data):
             feed_dict = {self.X: X, self.Y: Y, self.keep_prob: 1.0}
                 summ, loss_, acc =  sess.run([merged_summary, self.cross_loss, self.accuracy], feed_dict=feed_dict)
                 summary_writer.add_summary(summ, step)
             loss += loss_
-            accuracy += acc
+            accuracy.append(acc)
             i += 1
-        return loss / i, accuracy / i
+        return loss / i, sum(accuracy[-5:]) ** 3
 
     def add_summaries(self, sess):
         if self.config.load or self.config.debug:
@@ -72,6 +75,8 @@ class Model(object):
         return summary_writers
 
     def fit(self, sess, summarizer):
+        sess.run(self.init)
+        sess.run(self.local_init)
         max_epochs = self.config.max_epochs
         self.epoch_count, self.second_epoch_count = 0, 0
         losses, learning_rate, val_accuracy = list(), self.config.solver.learning_rate, 0.0
@@ -89,6 +94,7 @@ class Model(object):
             test_loss, test_accuracy = self.run_model_eval(sess, "test", summarizer['test'], tr_step)
             self.epoch_count += 1
         returnDict = {"test_loss" : test_loss, "test_accuracy" : test_accuracy}
+        self.saver.save(sess, self.config.ckptdir_path + "/model_best.ckpt")        
         return returnDict
 
 def init_model(config):
@@ -99,15 +105,13 @@ def init_model(config):
 
     tf_config = tf.ConfigProto(allow_soft_placement=True)#, device_count = {'GPU': 0})
     tf_config.gpu_options.allow_growth = True
-    sm = tf.train.SessionManager()
+    sess = tf.Session(config=tf_config)
 
-    if config.retrain or config.load == True:
+    if config.load:
         print("=> Loading model from checkpoint")
-        load_ckpt_dir = config.ckptdir_path
+        model.saver.restore(sess, config.ckptdir_path)
     else:
         print("=> No model loaded from checkpoint")
-        load_ckpt_dir = ''
-    sess = sm.prepare_session("", init_op=model.init, saver=model.saver, checkpoint_dir=load_ckpt_dir, config=tf_config)
     return model, sess
 
 def train_model(config):

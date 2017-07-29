@@ -18,7 +18,7 @@ class Config(object):
                 if t_args.opt.lower() not in ["adam", "rmsprop", "sgd"]: 
                     raise ValueError('Undefined type of optmizer')
                 else:  
-                    self.optimizer = {"adam": tf.train.AdamOptimizer, "rmsprop": tf.train.RMSPropOptimizer, "sgd": tf.train.GradientDescentOptimizer}[t_args.opt.lower()]
+                    self.optimizer = {"adam": tf.train.AdamOptimizer, "rmsprop": tf.train.RMSPropOptimizer, "sgd": tf.train.GradientDescentOptimizer, "normal": tf.train.Optimizer}[t_args.opt.lower()]
         
         self.solver = Solver(args)
         self.project_path, self.project_prefix_path, self.dataset_path, self.train_path, self.test_path, self.ckptdir_path = self.set_paths()
