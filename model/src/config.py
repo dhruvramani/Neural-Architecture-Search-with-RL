@@ -15,7 +15,7 @@ class Config(object):
             def __init__(self, t_args):
                 self.learning_rate = t_args.lr
                 self.dropout = t_args.dropout
-                if t_args.opt.lower() not in ["adam", "rmsprop", "sgd"]: 
+                if t_args.opt.lower() not in ["adam", "rmsprop", "sgd", "normal"]: 
                     raise ValueError('Undefined type of optmizer')
                 else:  
                     self.optimizer = {"adam": tf.train.AdamOptimizer, "rmsprop": tf.train.RMSPropOptimizer, "sgd": tf.train.GradientDescentOptimizer, "normal": tf.train.Optimizer}[t_args.opt.lower()]

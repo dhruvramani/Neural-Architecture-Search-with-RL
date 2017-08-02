@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 def path_exists(path, overwrite=False):
-    if not os.path.is_dir(path):
+    if not os.path.isdir(path):
         os.mkdir(path)
     elif overwrite == True :
         shutil.rmtree(path)

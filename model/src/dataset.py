@@ -15,7 +15,7 @@ def DataSet(object):
         elif type_ == "train": 
             data = np.load(self.config.train_path + self.batch_count)
             self.batch_count += 1
-        elif type_ == "validation"
+        elif type_ == "validation":
             data = np.load(self.config.train_path + 5)
         return data[:, 1:], data[:, 0]
 

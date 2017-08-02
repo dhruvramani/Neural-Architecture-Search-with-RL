@@ -56,8 +56,8 @@ class Model(object):
         merged_summary = self.summarizer.merge_all()
         for X, Y, tot in self.data.next_batch(data):
             feed_dict = {self.X: X, self.Y: Y, self.keep_prob: 1.0}
-                summ, loss_, acc =  sess.run([merged_summary, self.cross_loss, self.accuracy], feed_dict=feed_dict)
-                summary_writer.add_summary(summ, step)
+            summ, loss_, acc =  sess.run([merged_summary, self.cross_loss, self.accuracy], feed_dict=feed_dict)
+            summary_writer.add_summary(summ, step)
             loss += loss_
             accuracy.append(acc)
             i += 1
