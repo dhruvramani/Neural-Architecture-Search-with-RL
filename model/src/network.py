@@ -31,7 +31,7 @@ class Network(object):
             inp, state = self.lstm(inp, state)
             inp = tf.nn.softmax(tf.matmul(inp, self.Wc) + self.bc)
             output.append(inp)
-        out = [utils.max(output[0]), utils.max(output[1]), utils.max(output[2]), utils.max(output[3]), utils.max(output[4]), utils.max(output[5])]
+        out = [utisl.max(output[i]) for i in range(6)]
         return out, output[-1]
 
     def gen_hyperparams(self, output):
