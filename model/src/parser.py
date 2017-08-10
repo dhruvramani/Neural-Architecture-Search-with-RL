@@ -7,7 +7,7 @@ class Parser(object):
         parser.add_argument("--project", default="NASuRL", help="Project Folder")
         parser.add_argument("--folder_suffix", default="Default", help="Folder Name Suffix")
         parser.add_argument("--dataset", default="cifar-10", help="Name of the Dataset")
-        parser.add_argument("--opt", default="normal", help="Optimizer : adam, rmsprop, sgd")
+        parser.add_argument("--opt", default="sgd", help="Optimizer : adam, rmsprop, sgd, normal")
         parser.add_argument("--hyperparams", default=6, help="Number of Hyperparameters to search")
         parser.add_argument("--lr", default=0.0006, help="Learning Rate", type=float)
         parser.add_argument("--batch_size", default=1000, help="Batch Size", type=int)

@@ -11,6 +11,7 @@ class Config(object):
         self.batch_size = args.batch_size
         self.max_epochs = args.max_epochs
         self.hyperparams = args.hyperparams
+        self.load = args.load
         class Solver(object):
             def __init__(self, t_args):
                 self.learning_rate = t_args.lr
@@ -18,7 +19,7 @@ class Config(object):
                 if t_args.opt.lower() not in ["adam", "rmsprop", "sgd", "normal"]: 
                     raise ValueError('Undefined type of optmizer')
                 else:  
-                    self.optimizer = {"adam": tf.train.AdamOptimizer, "rmsprop": tf.train.RMSPropOptimizer, "sgd": tf.train.GradientDescentOptimizer, "normal": tf.train.Optimizer}[t_args.opt.lower()]
+                    self.optimizer = {"adam": tf.train.AdamOptimizer, "rmsprop": tf.train.RMSPropOptimizer, "sgd": tf.train.GradientDescentOptimizer, "normal": tf.train.Optimizer}[t_args.opt.lower()](self.learning_rate)
         
         self.solver = Solver(args)
         self.project_path, self.project_prefix_path, self.dataset_path, self.train_path, self.test_path, self.ckptdir_path = self.set_paths()

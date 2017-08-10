@@ -19,7 +19,8 @@ class Model(object):
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
-        self.y_pred = self.net.construct_model(self.X, self.hyperparams, self.keep_prob)
+        self.hype_list = [1, 1, 1, 1, 1, 1]
+        self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob)
         self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
         self.tr_model_step = self.net.train_model(self.cross_loss)
         self.accuracy = self.net.accuracy(self.y_pred, self.Y)
@@ -32,7 +33,7 @@ class Model(object):
         self.X = tf.placeholder(tf.float32, shape=[None, 3072])
         self.Y = tf.placeholder(tf.float32, shape=[None, 1])
         self.val_accuracy = tf.placeholder(tf.float32)
-        self.dropout = tf.placeholder(tf.float32)
+        self.keep_prob = tf.placeholder(tf.float32)
 
     def run_model_epoch(self, sess, data, summarizer, epoch):
         X, Y, i, err= None, None, 0, list()
@@ -64,7 +65,7 @@ class Model(object):
         return loss / i, sum(accuracy[-5:]) ** 3
 
     def add_summaries(self, sess):
-        if self.config.load or self.config.debug:
+        if self.config.load:
             path_ = "../results/tensorboard"
         else :
             path_ = "../bin/results/tensorboard"
@@ -81,6 +82,7 @@ class Model(object):
         self.epoch_count, self.second_epoch_count = 0, 0
         losses, learning_rate, val_accuracy = list(), self.config.solver.learning_rate, 0.0
         while self.epoch_count < max_epochs:
+            self.hype_list = sess.run(self.hyperparams)
             while self.second_epoch_count < max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.epoch_count)
                 if not self.config.debug:
