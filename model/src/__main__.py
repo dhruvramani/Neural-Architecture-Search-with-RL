@@ -62,7 +62,7 @@ class Model(object):
             loss += loss_
             accuracy.append(acc)
             i += 1
-        return loss / i, sum(accuracy[-5:]) ** 3
+        return loss / i, sum(accuracy[-5:]) ** 3 # Reward = cube(last 5 validation accuracy)
 
     def add_summaries(self, sess):
         if self.config.load:
@@ -79,8 +79,7 @@ class Model(object):
         sess.run(self.init)
         sess.run(self.local_init)
         max_epochs = self.config.max_epochs
-        self.epoch_count, self.second_epoch_count = 0, 0
-        losses, learning_rate, val_accuracy = list(), self.config.solver.learning_rate, 0.0
+        self.epoch_count, self.second_epoch_count, val_accuracy = 0, 0, 0.0
         while self.epoch_count < max_epochs:
             self.hype_list = sess.run(self.hyperparams)
             while self.second_epoch_count < max_epochs :
@@ -89,7 +88,7 @@ class Model(object):
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
                     output =  "=> Training : Loss = {:.3f} | Validation : Loss = {:.3f}".format(average_loss, val_loss)
                     with open("../stdout/validation.log", "a+") as f:
-                        f.write(output_)
+                        f.write(output)
                     print(output)
                 self.second_epoch_count += 1
             _ = sess.run(self.tr_cont_step, feed_dict={self.val_accuracy : val_accuracy})
