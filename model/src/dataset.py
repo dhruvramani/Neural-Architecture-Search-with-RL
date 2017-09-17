@@ -20,12 +20,12 @@ class DataSet(object):
 
     def get_batch(self, type_):
         if type_ == "test":
-            return self.load(self.config.test_path)
+            return self.load_data(self.config.test_path)
         elif type_ == "train": 
             self.batch_count += 1
-            return self.load(self.config.train_path + str(self.batch_count))
+            return self.load_data(self.config.train_path + str(self.batch_count))
         elif type_ == "validation":
-            return self.load(self.config.train_path + "5")
+            return self.load_data(self.config.train_path + "5")
 
     def next_batch(self, type_):
         if self.batch_count > 4:
