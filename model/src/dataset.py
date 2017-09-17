@@ -16,7 +16,7 @@ class DataSet(object):
             unpickler.encoding = 'latin1'
             contents = unpickler.load()
             X, Y = contents['data'], contents['labels']
-            return np.asarray(X), np.asarray(Y)
+            return np.asarray(X, dtype=np.float32), np.expand_dims(np.asarray(Y, dtype=np.float32), axis=1)
 
     def get_batch(self, type_):
         if type_ == "test":
