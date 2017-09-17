@@ -1,6 +1,7 @@
 import os
 import utils
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
@@ -9,15 +10,22 @@ class DataSet(object):
         self.config = config
         self.batch_count = 1
 
+    def load_data(self, file_name):
+        with open(file_name, 'rb') as file:
+            unpickler = pickle._Unpickler(file)
+            unpickler.encoding = 'latin1'
+            contents = unpickler.load()
+            X, Y = contents['data'], contents['labels']
+            return X, Y
+
     def get_batch(self, type_):
         if type_ == "test":
-            data = np.load(self.config.test_path)
+            return self.load(self.config.test_path)
         elif type_ == "train": 
-            data = np.load(self.config.train_path + str(self.batch_count))
             self.batch_count += 1
+            return self.load(self.config.train_path + str(self.batch_count))
         elif type_ == "validation":
-            data = np.load(self.config.train_path + "5")
-        return data[:, 1:], data[:, 0]
+            return self.load(self.config.train_path + "5")
 
     def next_batch(self, type_):
         if self.batch_count > 4:
