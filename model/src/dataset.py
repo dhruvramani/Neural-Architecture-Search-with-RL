@@ -17,7 +17,7 @@ class DataSet(object):
             contents = unpickler.load()
             X, Y = np.asarray(contents['data'], dtype=np.float32), np.asarray(contents['labels'], dtype=np.float32)
             one_hot = np.zeros(Y.size, Y.max() + 1)
-            one_hot[np.arrange(Y.size), Y] = 1
+            one_hot[np.arange(Y.size), Y] = 1
             return X, one_hot
 
     def get_batch(self, type_):
