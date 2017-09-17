@@ -36,6 +36,6 @@ class DataSet(object):
         while start < total:
             end = start + batch_size
             x = X[start : end, :]
-            y = Y[start : end, :]
+            y = Y[start : end]
             start += 1
             yield (x, y, int(total))
