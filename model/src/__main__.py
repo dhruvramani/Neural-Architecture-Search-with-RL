@@ -89,7 +89,7 @@ class Model(object):
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
                     reward = sum(val_accuracy[-5:]) ** 3
-                    output =  "=> Training : Loss = {:.3f} | Validation : Loss = {:.3f}, Accuracy : {:.3f}".format(average_loss, val_loss, val_accuracy[0])
+                    output =  "=> Training : Loss = {:.3f} | Validation : Loss = {:.3f}, Accuracy : {:.3f}".format(average_loss, val_loss, val_accuracy[-1])
                     with open("../stdout/validation.log", "a+") as f:
                         f.write(output)
                     print(output)
