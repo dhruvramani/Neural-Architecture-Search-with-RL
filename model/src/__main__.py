@@ -41,7 +41,7 @@ class Model(object):
         for X, Y, tot in self.data.next_batch(data):
             feed_dict = {self.X : X, self.Y : Y, self.keep_prob : self.config.solver.dropout}
             loss, _ = sess.run([self.cross_loss, self.tr_model_step], feed_dict=feed_dict)
-            output = "Epoch ({}.{}) Batch({}) : Loss = {}".format(self.epoch_count, self.second_epoch_count, i , loss)
+            output = "Epoch ({}-{}) Batch({}) : Loss = {}".format(self.epoch_count, self.second_epoch_count, i , loss)
             with open("../stdout/train.log", "a+") as log:
                 log.write(output + "\n")
             print("   {}".format(output), end='\r')
@@ -80,10 +80,10 @@ class Model(object):
         sess.run(self.local_init)
         max_epochs = self.config.max_epochs
         self.epoch_count, self.second_epoch_count, val_accuracy = 0, 0, 0.0
-        while self.epoch_count < max_epochs:
+        while self.epoch_count < self.config.max_epochs:
             self.hype_list = sess.run(self.hyperparams)
             while self.second_epoch_count < max_epochs :
-                average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.epoch_count)
+                average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
                     output =  "=> Training : Loss = {:.3f} | Validation : Loss = {:.3f}".format(average_loss, val_loss)
