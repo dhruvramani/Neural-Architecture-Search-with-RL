@@ -62,7 +62,7 @@ class Model(object):
             loss += loss_
             accuracy.append(acc)
             i += 1
-        accuracy = accuracy.sort()
+        accuracy.sort()
         return loss / i, sum(accuracy[-5:]) ** 3 # Reward = cube(last 5 validation accuracy)
 
     def add_summaries(self, sess):
