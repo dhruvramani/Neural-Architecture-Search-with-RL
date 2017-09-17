@@ -83,7 +83,7 @@ class Model(object):
         while self.epoch_count < max_epochs:
             self.hype_list = sess.run(self.hyperparams)
             self.second_epoch_count = 0
-            while self.second_epoch_count < max_epochs :
+            while self.second_epoch_count < 4 * max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
