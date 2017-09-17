@@ -31,7 +31,7 @@ class Model(object):
 
     def add_placeholders(self):
         self.X = tf.placeholder(tf.float32, shape=[None, 3072])
-        self.Y = tf.placeholder(tf.float32, shape=[None, 1])
+        self.Y = tf.placeholder(tf.float32, shape=[None])
         self.val_accuracy = tf.placeholder(tf.float32)
         self.keep_prob = tf.placeholder(tf.float32)
 
