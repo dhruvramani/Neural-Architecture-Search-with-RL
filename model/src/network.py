@@ -63,7 +63,7 @@ class Network(object):
         return output
 
     def model_loss(self, logits, labels):
-        cross_entroy = tf.add(tf.multiply(tf.log(1e-10 + tf.nn.sigmoid(logits)), labels), tf.multiply(tf.log(1e-10 + (1 - tf.nn.sigmoid(logits))), (1 - labels)))
+        cross_entropy = tf.add(tf.multiply(tf.log(1e-10 + tf.nn.sigmoid(logits)), labels), tf.multiply(tf.log(1e-10 + (1 - tf.nn.sigmoid(logits))), (1 - labels)))
         return -1 * tf.reduce_mean(tf.reduce_sum(cross_entropy, 1), name='xentropy_mean')
 
 
