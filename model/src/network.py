@@ -39,7 +39,10 @@ class Network(object):
         filter_dims = tf.constant([1, 3, 5, 7], dtype=tf.int32)
         n_filters = tf.constant([24, 36, 48, 64], dtype=tf.int32)
         strides = tf.constant([1, 2, 3, 4], dtype=tf.int32)
-        hyperparams = [filter_dims[output[i]] for i in range(6)]
+        hyperparams = list()
+        hyperparams[0], hyperparams[1] = filter_dims[output[0]], filter_dims[output[1]]
+        hyperparams[2], hyperparams[3] = strides[output[2]], strides[output[3]]
+        hyperparams[4], hyperparams[5] = n_filters[output[4]], n_filters[output[5]]
         return hyperparams
 
     def construct_model(self, data, hyperparams, keep_prob):
