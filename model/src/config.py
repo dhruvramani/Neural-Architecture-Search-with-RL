@@ -12,6 +12,7 @@ class Config(object):
         self.max_epochs = args.max_epochs
         self.hyperparams = args.hyperparams
         self.load = args.load
+        self.debug = args.debug
         class Solver(object):
             def __init__(self, t_args):
                 self.learning_rate = t_args.lr
