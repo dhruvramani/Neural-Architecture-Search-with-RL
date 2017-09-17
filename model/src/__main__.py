@@ -79,9 +79,10 @@ class Model(object):
         sess.run(self.init)
         sess.run(self.local_init)
         max_epochs = self.config.max_epochs
-        self.epoch_count, self.second_epoch_count, val_accuracy = 0, 0, 0.0
-        while self.epoch_count < self.config.max_epochs:
+        self.epoch_count, val_accuracy = 0, 0.0
+        while self.epoch_count < max_epochs:
             self.hype_list = sess.run(self.hyperparams)
+            self.second_epoch_count = 0
             while self.second_epoch_count < max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
