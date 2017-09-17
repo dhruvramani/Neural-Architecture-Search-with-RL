@@ -11,7 +11,7 @@ from network import Network
 class Model(object):
     def __init__(self, config):
         self.config = config
-        self.data = DataSet(config)
+        self.data = DataSet(self.config)
         self.add_placeholders()
         self.summarizer = tf.summary
         self.net = Network(config)

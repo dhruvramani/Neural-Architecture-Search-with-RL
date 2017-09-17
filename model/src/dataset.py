@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-def DataSet(object):
+class DataSet(object):
     def __init__(self, config):
         self.config = config
         self.batch_count = 1
@@ -22,7 +22,7 @@ def DataSet(object):
     def next_batch(self, type_):
         if self.batch_count > 4:
             self.batch_count = 1
-        X, Y = get_batch(type_)
+        X, Y = self.get_batch(type_)
         start, batch_size, tot = 0, self.config.batch_size, len(X)
         total = int(tot/ batch_size) # fix the last batch
         while start < total:
