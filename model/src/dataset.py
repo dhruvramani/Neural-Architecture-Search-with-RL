@@ -1,7 +1,7 @@
 import os
 import utils
-import numpy as np
 import pickle
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
@@ -16,7 +16,7 @@ class DataSet(object):
             unpickler.encoding = 'latin1'
             contents = unpickler.load()
             X, Y = contents['data'], contents['labels']
-            return X, Y
+            return np.asarray(X), np.asarray(Y)
 
     def get_batch(self, type_):
         if type_ == "test":
