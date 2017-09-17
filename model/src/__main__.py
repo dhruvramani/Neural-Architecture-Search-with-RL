@@ -40,7 +40,7 @@ class Model(object):
         merged_summary = self.summarizer.merge_all()
         for X, Y, tot in self.data.next_batch(data):
             feed_dict = {self.X : X, self.Y : Y, self.keep_prob : self.config.solver.dropout}
-            summ, _, loss = sess.run([merged_summary, self.tr_model_step, self.cross_loss], feed_dict=feed_dict)
+            summ, loss, _ = sess.run([merged_summary, self.cross_loss, self.tr_model_step], feed_dict=feed_dict)
             output = "Epoch ({}.{}) Batch({}) : Loss = {}".format(self.epoch_count, self.second_epoch_count, i , loss)
             with open("../stdout/train.log", "a+") as log:
                 log.write(output + "\n")
