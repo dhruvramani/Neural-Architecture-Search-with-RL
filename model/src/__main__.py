@@ -87,7 +87,7 @@ class Model(object):
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
-                    output =  "=> Training : Loss = {:.3f} | Validation : Loss = {:.3f}".format(average_loss, val_loss)
+                    output =  "=> Training : Loss = {:.3f} | Validation : Loss = {:.3f}, Accuracy : {:.3f}".format(average_loss, val_loss, val_accuracy)
                     with open("../stdout/validation.log", "a+") as f:
                         f.write(output)
                     print(output)
