@@ -13,10 +13,10 @@ class DataSet(object):
         if type_ == "test":
             data = np.load(self.config.test_path)
         elif type_ == "train": 
-            data = np.load(self.config.train_path + self.batch_count)
+            data = np.load(self.config.train_path + str(self.batch_count))
             self.batch_count += 1
         elif type_ == "validation":
-            data = np.load(self.config.train_path + 5)
+            data = np.load(self.config.train_path + "5")
         return data[:, 1:], data[:, 0]
 
     def next_batch(self, type_):
