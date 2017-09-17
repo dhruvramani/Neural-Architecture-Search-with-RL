@@ -31,7 +31,7 @@ class Model(object):
 
     def add_placeholders(self):
         self.X = tf.placeholder(tf.float32, shape=[None, 3072])
-        self.Y = tf.placeholder(tf.float32, shape=[None, 1])
+        self.Y = tf.placeholder(tf.float32, shape=[None, 10])
         self.val_accuracy = tf.placeholder(tf.float32)
         self.keep_prob = tf.placeholder(tf.float32)
 
@@ -57,8 +57,8 @@ class Model(object):
         merged_summary = self.summarizer.merge_all()
         for X, Y, tot in self.data.next_batch(data):
             feed_dict = {self.X: X, self.Y: Y, self.keep_prob: 1.0}
-            summ, loss_, acc =  sess.run([merged_summary, self.cross_loss, self.accuracy], feed_dict=feed_dict)
-            summary_writer.add_summary(summ, step)
+            loss_, acc =  sess.run([merged_summary, self.cross_loss, self.accuracy], feed_dict=feed_dict)
+            #summary_writer.add_summary(summ, step)
             loss += loss_
             accuracy.append(acc)
             i += 1

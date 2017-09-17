@@ -15,8 +15,10 @@ class DataSet(object):
             unpickler = pickle._Unpickler(file)
             unpickler.encoding = 'latin1'
             contents = unpickler.load()
-            X, Y = contents['data'], contents['labels']
-            return np.asarray(X, dtype=np.float32), np.expand_dims(np.asarray(Y, dtype=np.float32), axis=1)
+            X, Y = np.asarray(contents['data'], dtype=np.float32), np.asarray(contents['labels'], dtype=np.float32)
+            one_hot = np.zeros(Y.size, Y.max() + 1)
+            one_hot[np.arrange(Y.size), Y] = 1
+            return X, one_hot
 
     def get_batch(self, type_):
         if type_ == "test":
