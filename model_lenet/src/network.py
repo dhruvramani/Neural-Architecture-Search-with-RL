@@ -80,7 +80,7 @@ class Network(object):
 
         shape = pool3.get_shape().as_list()
         mult = 1
-        for i in shape:
+        for i in shape[1:]:
             mult *= i
         self.Wf1 = self.weight_variable(shape=[mult, hyperparams["n_autoneurons"]], name="w_fc1")
         reshaped = tf.reshape(pool3, [shape[0], mult])
