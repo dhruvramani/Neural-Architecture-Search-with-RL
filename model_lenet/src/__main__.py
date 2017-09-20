@@ -19,7 +19,7 @@ class Model(object):
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
-        self.hype_list = [1 for i in range(self.config.hyperparams)] #[7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
+        self.hype_list = [7, 7, 24, 5, 5, 36, 3, 3, 48, 64] #[1 for i in range(self.config.hyperparams)]
         self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob)
         self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
         self.tr_model_step = self.net.train_model(self.cross_loss)
@@ -82,8 +82,8 @@ class Model(object):
         max_epochs = self.config.max_epochs
         self.epoch_count, val_accuracy, reward = 0, 0.0, 1.0
         while self.epoch_count < max_epochs:
-            #if(self.epoch_count != 0):
-            self.hype_list = sess.run(self.hyperparams)
+            if(self.epoch_count != 0):
+                self.hype_list = sess.run(self.hyperparams)
             hyperfoo = {"Filter Row 1": self.hype_list[0], "Filter Column 1": self.hype_list[1], "No Filter 1": self.hype_list[2], "Filter Row 2": self.hype_list[3], "Filter Column 2": self.hype_list[4], "No Filter 2": self.hype_list[5], "Filter Row 3": self.hype_list[6], "Filter Column 3": self.hype_list[7], "No Filter 3": self.hype_list[8], "No Neurons": self.hype_list[9]}
             for key in hyperfoo:
                 print("{} : {}".format(key, hyperfoo[key]))
