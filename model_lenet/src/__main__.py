@@ -19,7 +19,7 @@ class Model(object):
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
-        self.hype_list = [7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
+        self.hype_list = [1 for i in range(self.config.hyperparams)] #[7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
         self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob)
         self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
         self.tr_model_step = self.net.train_model(self.cross_loss)
@@ -82,8 +82,8 @@ class Model(object):
         max_epochs = self.config.max_epochs
         self.epoch_count, val_accuracy, reward = 0, 0.0, 1.0
         while self.epoch_count < max_epochs:
-            if(self.epoch_count != 0):
-                self.hype_list = sess.run(self.hyperparams)
+            #if(self.epoch_count != 0):
+            self.hype_list = sess.run(self.hyperparams)
             self.second_epoch_count = 0
             while self.second_epoch_count < 4 * max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
