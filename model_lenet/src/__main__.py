@@ -18,8 +18,8 @@ class Model(object):
         self.saver = tf.train.Saver()
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
-        self.self.hype_list = self.net.gen_self.hype_list(self.outputs)
-        self.hype_list = [1 for i in range(self.config.self.hype_list)] #[7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
+        self.hyperparams = self.net.hyperparams(self.outputs)
+        self.hype_list = [1 for i in range(self.config.hyperparams)] #[7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
         self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob)
         self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
         self.tr_model_step = self.net.train_model(self.cross_loss)
