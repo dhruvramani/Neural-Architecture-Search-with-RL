@@ -37,7 +37,7 @@ class Network(object):
         return out, output[-1]
 
     def gen_hyperparams(self, output):
-        filter_dims = tf.constant([1, 3, 5, 7], dtype=tf.int32)
+        filter_dims = tf.constant([3, 5, 7, 9], dtype=tf.int32)
         n_filters = tf.constant([24, 36, 48, 64], dtype=tf.int32)
         strides = tf.constant([1, 2, 3, 4], dtype=tf.int32)
         hyperparams = [1 for _ in range(self.n_steps)]
