@@ -83,7 +83,7 @@ class Model(object):
         self.epoch_count, val_accuracy, reward = 0, 0.0, 1.0
         while self.epoch_count < max_epochs:
             #if(self.epoch_count != 0):
-            self.hype_list = sess.run(self.self.hype_list)
+            self.hype_list = sess.run(self.hyperparams)
             hyperparams = {"Filter Row 1": self.hype_list[0], "Filter Column 1": self.hype_list[1], "No Filter 1": self.hype_list[2], "Filter Row 2": self.hype_list[3], "Filter Column 2": self.hype_list[4], "No Filter 2": self.hype_list[5], "Filter Row 3": self.hype_list[6], "Filter Column 3": self.hype_list[7], "No Filter 3": self.hype_list[8], "No Neurons": self.hype_list[9]}
             for key, value in hyperparams:
                 print("{} : {}".format(key, value))
