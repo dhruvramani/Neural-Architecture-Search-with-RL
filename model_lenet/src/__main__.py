@@ -85,11 +85,14 @@ class Model(object):
             #if(self.epoch_count != 0):
             self.hype_list = sess.run(self.hyperparams)
             hyperfoo = {"Filter Row 1": self.hype_list[0], "Filter Column 1": self.hype_list[1], "No Filter 1": self.hype_list[2], "Filter Row 2": self.hype_list[3], "Filter Column 2": self.hype_list[4], "No Filter 2": self.hype_list[5], "Filter Row 3": self.hype_list[6], "Filter Column 3": self.hype_list[7], "No Filter 3": self.hype_list[8], "No Neurons": self.hype_list[9]}
+            output = ""
             for key in hyperfoo:
-                print("{} : {}".format(key, hyperfoo[key]))
-            print("\n")
+                output += "{} : {}\n".format(key, hyperfoo[key])
+            with open("../stdout/hyperparams.log", "a+") as f:
+                f.write(output)
+            print(output + "\n")
             self.second_epoch_count = 0
-            while self.second_epoch_count < 4 * max_epochs :
+            while self.second_epoch_count < max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
