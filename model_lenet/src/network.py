@@ -93,7 +93,7 @@ class Network(object):
 
     def train_model(self, loss):
         optimizer = self.config.solver.optimizer
-        var_list = [self.Wconv1, self.bconv1, self.Wconv2, self.bconv2, self.Wconv3, self.bconv3]
+        var_list = [self.Wconv1, self.bconv1, self.Wconv2, self.bconv2, self.Wconv3, self.bconv3, self.bf1, self.bf2, self.Wf1, self.Wf2]
         return optimizer.minimize(loss, var_list=var_list)
 
     def accuracy(self, logits, labels):
