@@ -97,7 +97,7 @@ class Network(object):
         return optimizer.minimize(loss, var_list=var_list)
 
     def accuracy(self, logits, labels):
-        return tf.reduce_mean(tf.cast(tf.equal(utils.max(logits), utils.max(labels)), tf.float32))
+        return 100.0 * tf.reduce_mean(tf.cast(tf.equal(utils.max(logits), utils.max(labels)), tf.float32))
 
     def train_controller(self, reinforce_loss, val_accuracy):
         optimizer = self.config.solver.optimizer
