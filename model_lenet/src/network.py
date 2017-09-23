@@ -69,14 +69,14 @@ class Network(object):
         self.bf2 = self.bias_variable(shape=[10], name="b_fc2")
 
         conv1 = tf.nn.conv2d(images, self.Wconv1, strides=[1, 1, 1, 1], padding="SAME")
-        conv1 = tf.nn.bias_add(conv1, self.bconv1)
-        pool1 = tf.nn.max_pool(conv1, [1, 5, 5, 1], [1, 1, 1, 1], padding = 'VALID')        
+        conv1 = tf.nn.relu(tf.nn.bias_add(conv1, self.bconv1))
+        pool1 = tf.nn.max_pool(conv1, [1, 3, 3, 1], [1, 2, 2, 1], padding = 'SAME')        
         conv2 = tf.nn.conv2d(pool1, self.Wconv2, strides=[1, 1, 1, 1], padding="SAME")
-        conv2 = tf.nn.bias_add(conv2, self.bconv2)
-        pool2 = tf.nn.max_pool(conv2, [1, 5, 5, 1], [1, 1, 1, 1], padding = 'VALID')
+        conv2 = tf.nn.relu(tf.nn.bias_add(conv2, self.bconv2))
+        pool2 = tf.nn.max_pool(conv2, [1, 3, 3, 1], [1, 2, 2, 1], padding = 'SAME')
         conv3 = tf.nn.conv2d(pool2, self.Wconv3, strides=[1, 1, 1, 1], padding="SAME")
-        conv3 = tf.nn.bias_add(conv3, self.bconv3)
-        pool3 = tf.nn.max_pool(conv3, [1, 5, 5, 1], [1, 1, 1, 1], padding = 'VALID')
+        conv3 = tf.nn.relu(tf.nn.bias_add(conv3, self.bconv3))
+        pool3 = tf.nn.max_pool(conv3, [1, 3, 3, 1], [1, 2, 2, 1], padding = 'SAME')
 
         shape = pool3.get_shape().as_list()
         mult = 1
