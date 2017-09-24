@@ -110,7 +110,7 @@ class Network(object):
 
     def train_controller(self, reinforce_loss, val_accuracy):
         optimizer = self.config.solver.optimizer
-        var_list = [Network.Wc, Network.bc]
+        var_list = [self.Wc, self.bc]
         gradients = optimizer.compute_gradients(loss=reinforce_loss, var_list=var_list)
         for i, (grad, var) in enumerate(gradients):
             if grad is not None:
