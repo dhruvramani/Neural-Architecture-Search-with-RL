@@ -16,11 +16,12 @@ class Model(object):
         self.summarizer = tf.summary
         self.net = Network(config)
         self.saver = tf.train.Saver()
+        self.inside = 0
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
         self.hype_list = [1 for i in range(self.config.hyperparams)] #[7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
-        self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob)
+        self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob, self.inside)
         self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
         self.tr_model_step = self.net.train_model(self.cross_loss)
         self.accuracy = self.net.accuracy(self.y_pred, self.Y)
@@ -93,7 +94,7 @@ class Model(object):
             print(self.outputs)
             print(output + "\n")
             self.second_epoch_count = 0
-            self.net.init_cnn_vars()
+            self.inside = 0
             while self.second_epoch_count < max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
@@ -104,6 +105,7 @@ class Model(object):
                         f.write(output)
                     print(output)
                 self.second_epoch_count += 1
+                self.inside = 1
             _ = sess.run(self.tr_cont_step, feed_dict={self.val_accuracy : reward})
             test_loss, test_accuracy = self.run_model_eval(sess, "test", summarizer['test'], tr_step)
             self.epoch_count += 1
