@@ -90,8 +90,8 @@ class Network(object):
         dim = reshaped.get_shape()[1].value
         self.Wf1 = self.weight_variable(shape=[dim, 384], name="w_fc1")
         f1 = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.bf1), keep_prob)
-        f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, self.Wf2) + self.b2), keep_prob)
-        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(f2, self.Wf3) + self.b3), keep_prob)
+        f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, self.Wf2) + self.bf2), keep_prob)
+        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(f2, self.Wf3) + self.bf3), keep_prob)
         output = tf.matmul(fc, self.Wf4)+ self.bf4
         return output
 
