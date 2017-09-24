@@ -12,7 +12,7 @@ def path_exists(path, overwrite=False):
 
 def remove_dir(path):
     os.rmdir(path)
-    return Truei
+    return True
 
 def relu_init(shape, dtype=tf.float32, partition_info=None):
     init_range = np.sprt(2.0 / shape[1])
