@@ -5,6 +5,8 @@ import numpy as np
 import tensorflow as tf
 
 class Network(object):
+    Wconv1, bconv1,  Wconv2,  bconv2,  Wconv3,  bconv3 =  None, None, None, None, None, None
+    Wf1,  bf1,  Wf2,  bf2,  Wf3,  bf3,  Wf4,  bf4 = None, None, None, None, None, None, None, None
     def __init__(self, config):
         self.config = config
         self.n_steps = self.config.hyperparams
@@ -12,8 +14,6 @@ class Network(object):
         self.state = tf.Variable(tf.zeros(shape=[1, 4]))
         self.lstm = tf.contrib.rnn.BasicLSTMCell(self.n_hidden, forget_bias=1.0, state_is_tuple=False)
         self.Wc, self.bc = self.init_controller_vars()
-        self.Wconv1, self.bconv1, self.Wconv2, self.bconv2, self.Wconv3, self.bconv3 =  None, None, None, None, None, None
-        self.Wf1, self.bf1, self.Wf2, self.bf2, self.Wf3, self.bf3, self.Wf4, self.bf4 = None, None, None, None, None, None, None, None
     
     def weight_variable(self, shape, name):
         return tf.Variable(tf.random_normal(shape=shape), name=name)
