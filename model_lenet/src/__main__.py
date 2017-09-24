@@ -90,6 +90,7 @@ class Model(object):
                 output += "{} : {}\n".format(key, hyperfoo[key])
             with open("../stdout/hyperparams.log", "a+") as f:
                 f.write(output + "\n\n")
+            print(self.outputs)
             print(output + "\n")
             self.second_epoch_count = 0
             while self.second_epoch_count < max_epochs :
