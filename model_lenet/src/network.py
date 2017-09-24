@@ -16,10 +16,10 @@ class Network(object):
         self.Wf1, self.bf1, self.Wf2, self.bf2, self.Wf3, self.bf3, self.Wf4, self.bf4 = None, None, None, None, None, None, None, None
     
     def weight_variable(self, shape, name):
-        return tf.get_variable(name=name, shape=shape, initializer=tf.contrib.layers.xavier_initializer())
+        return tf.Variable(tf.random_normal(shape=shape), name=name)
 
     def bias_variable(self, shape, name):
-        return tf.Variable(tf.constant(0.1, shape=shape), name=name)
+        return tf.Variable(tf.random_normal(shape=shape), name=name)
 
     def init_controller_vars(self):
         Wc = self.weight_variable(shape=[self.n_hidden, self.n_input], name="w_controller")
@@ -59,7 +59,6 @@ class Network(object):
         hyperparams = {"filter_row_1": hyperparams[0], "filter_column_1": hyperparams[1], "n_filter_1": hyperparams[2], "filter_row_2": hyperparams[3], "filter_column_2": hyperparams[4], "n_filter_2": hyperparams[5], "filter_row_3": hyperparams[6], "filter_column_3": hyperparams[7], "n_filter_3": hyperparams[8], "n_autoneurons": hyperparams[9]}
         images = tf.reshape(data, [self.config.batch_size, 32, 32, 3])
         if(inside == 0):
-            print("Hello!")
             self.Wconv1 = self.weight_variable(shape=[hyperparams["filter_row_1"], hyperparams["filter_column_1"], 3, hyperparams["n_filter_1"]], name="kernel_1")
             self.bconv1 = self.bias_variable(shape=[hyperparams["n_filter_1"]], name="b_conv_1")
             self.Wconv2 = self.weight_variable(shape=[hyperparams["filter_row_2"], hyperparams["filter_column_2"], hyperparams["n_filter_1"], hyperparams["n_filter_2"]], name="kernel_2")
