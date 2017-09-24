@@ -96,8 +96,7 @@ class Network(object):
         return output
 
     def model_loss(self, logits, labels):
-        labels = tf.cast(labels, tf.int64)
-        return tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels))
+        return tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
 
     def train_model(self, loss):
         optimizer = self.config.solver.optimizer
