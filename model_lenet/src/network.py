@@ -13,7 +13,7 @@ class Network(object):
         self.lstm = tf.contrib.rnn.BasicLSTMCell(self.n_hidden, forget_bias=1.0, state_is_tuple=False)
         self.Wc, self.bc = self.init_controller_vars()
         self.Wconv1, self.bconv1, self.Wconv2, self.bconv2, self.Wconv3, self.bconv3 =  None, None, None, None, None, None
-        self.Wf1, self.bf1, self.Wf2, self.bf2, self.Wf3, self.bf3, self.Wf4, self.bf4 = None, None, None, None
+        self.Wf1, self.bf1, self.Wf2, self.bf2, self.Wf3, self.bf3, self.Wf4, self.bf4 = None, None, None, None, None, None, None, None
     
     def weight_variable(self, shape, name):
         return tf.get_variable(name=name, shape=shape, initializer=tf.contrib.layers.xavier_initializer())
@@ -64,7 +64,7 @@ class Network(object):
         self.bconv2 = self.bias_variable(shape=[hyperparams["n_filter_2"]], name="b_conv_2")
         self.Wconv3 = self.weight_variable(shape=[hyperparams["filter_row_3"], hyperparams["filter_column_3"], hyperparams["n_filter_2"], hyperparams["n_filter_3"]], name="kernel_3")
         self.bconv3 = self.bias_variable(shape=[hyperparams["n_filter_3"]], name="b_conv_3")
-        self.bf1 = self.bias_variable(shape=[384]], name="b_fc1")
+        self.bf1 = self.bias_variable(shape=[384], name="b_fc1")
         self.Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
         self.bf2 = self.bias_variable(shape=[192], name="b_fc2")
         self.Wf3 = self.weight_variable(shape=[192, hyperparams["n_autoneurons"]], name="w_fc3")
