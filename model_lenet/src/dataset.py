@@ -16,9 +16,9 @@ class DataSet(object):
             unpickler.encoding = 'latin1'
             contents = unpickler.load()
             X, Y = np.asarray(contents['data'], dtype=np.float32), np.asarray(contents['labels'])
-            one_hot = np.zeros((Y.size, Y.max() + 1))
-            one_hot[np.arange(Y.size), Y] = 1
-            return X, one_hot
+            #one_hot = np.zeros((Y.size, Y.max() + 1))
+            #one_hot[np.arange(Y.size), Y] = 1
+            return X, Y#one_hot
 
     def get_batch(self, type_):
         if type_ == "test":
