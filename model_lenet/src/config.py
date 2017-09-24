@@ -10,6 +10,7 @@ class Config(object):
         self.dataset_name = args.dataset
         self.batch_size = args.batch_size
         self.max_epochs = args.max_epochs
+        self.num_classes = args.num_classes
         self.hyperparams = args.hyperparams
         self.load = args.load
         self.debug = args.debug
