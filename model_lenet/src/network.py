@@ -14,6 +14,7 @@ class Network(object):
         self.Wc, self.bc = self.init_controller_vars()
         self.Wconv1, self.bconv1, self.Wconv2, self.bconv2, self.Wconv3, self.bconv3 =  None, None, None, None, None, None
         self.Wf1, self.bf1, self.Wf2, self.bf2, self.Wf3, self.bf3, self.Wf4, self.bf4 = None, None, None, None, None, None, None, None
+        self.init_cnn_vars()
     
     def weight_variable(self, shape, name):
         return tf.get_variable(name=name, shape=shape, initializer=tf.contrib.layers.xavier_initializer())
