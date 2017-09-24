@@ -93,6 +93,7 @@ class Model(object):
             print(self.outputs)
             print(output + "\n")
             self.second_epoch_count = 0
+            self.net.init_cnn_vars()
             while self.second_epoch_count < max_epochs :
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:

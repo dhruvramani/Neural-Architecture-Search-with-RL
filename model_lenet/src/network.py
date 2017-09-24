@@ -26,6 +26,21 @@ class Network(object):
         bc = self.bias_variable(shape=[self.n_input], name="b_controller")
         return Wc, bc
 
+    def init_cnn_vars(self):
+        self.Wconv1 = self.weight_variable(shape=[hyperparams["filter_row_1"], hyperparams["filter_column_1"], 3, hyperparams["n_filter_1"]], name="kernel_1")
+        self.bconv1 = self.bias_variable(shape=[hyperparams["n_filter_1"]], name="b_conv_1")
+        self.Wconv2 = self.weight_variable(shape=[hyperparams["filter_row_2"], hyperparams["filter_column_2"], hyperparams["n_filter_1"], hyperparams["n_filter_2"]], name="kernel_2")
+        self.bconv2 = self.bias_variable(shape=[hyperparams["n_filter_2"]], name="b_conv_2")
+        self.Wconv3 = self.weight_variable(shape=[hyperparams["filter_row_3"], hyperparams["filter_column_3"], hyperparams["n_filter_2"], hyperparams["n_filter_3"]], name="kernel_3")
+        self.bconv3 = self.bias_variable(shape=[hyperparams["n_filter_3"]], name="b_conv_3")
+        self.bf1 = self.bias_variable(shape=[384], name="b_fc1")
+        self.Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
+        self.bf2 = self.bias_variable(shape=[192], name="b_fc2")
+        self.Wf3 = self.weight_variable(shape=[192, hyperparams["n_autoneurons"]], name="w_fc3")
+        self.bf3 = self.bias_variable(shape=[hyperparams["n_autoneurons"]], name="b_fc3")
+        self.Wf4 = self.weight_variable(shape=[hyperparams["n_autoneurons"], self.config.num_classes], name="w_fc4")
+        self.bf4 = self.bias_variable(shape=[self.config.num_classes], name="b_fc4")
+
     def neural_search(self):
         inp = tf.constant(np.zeros((1, 4), dtype="float32"))
         output = list()
@@ -58,19 +73,6 @@ class Network(object):
         data = tf.expand_dims(data, -1)
         hyperparams = {"filter_row_1": hyperparams[0], "filter_column_1": hyperparams[1], "n_filter_1": hyperparams[2], "filter_row_2": hyperparams[3], "filter_column_2": hyperparams[4], "n_filter_2": hyperparams[5], "filter_row_3": hyperparams[6], "filter_column_3": hyperparams[7], "n_filter_3": hyperparams[8], "n_autoneurons": hyperparams[9]}
         images = tf.reshape(data, [self.config.batch_size, 32, 32, 3])
-        self.Wconv1 = self.weight_variable(shape=[hyperparams["filter_row_1"], hyperparams["filter_column_1"], 3, hyperparams["n_filter_1"]], name="kernel_1")
-        self.bconv1 = self.bias_variable(shape=[hyperparams["n_filter_1"]], name="b_conv_1")
-        self.Wconv2 = self.weight_variable(shape=[hyperparams["filter_row_2"], hyperparams["filter_column_2"], hyperparams["n_filter_1"], hyperparams["n_filter_2"]], name="kernel_2")
-        self.bconv2 = self.bias_variable(shape=[hyperparams["n_filter_2"]], name="b_conv_2")
-        self.Wconv3 = self.weight_variable(shape=[hyperparams["filter_row_3"], hyperparams["filter_column_3"], hyperparams["n_filter_2"], hyperparams["n_filter_3"]], name="kernel_3")
-        self.bconv3 = self.bias_variable(shape=[hyperparams["n_filter_3"]], name="b_conv_3")
-        self.bf1 = self.bias_variable(shape=[384], name="b_fc1")
-        self.Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
-        self.bf2 = self.bias_variable(shape=[192], name="b_fc2")
-        self.Wf3 = self.weight_variable(shape=[192, hyperparams["n_autoneurons"]], name="w_fc3")
-        self.bf3 = self.bias_variable(shape=[hyperparams["n_autoneurons"]], name="b_fc3")
-        self.Wf4 = self.weight_variable(shape=[hyperparams["n_autoneurons"], self.config.num_classes], name="w_fc4")
-        self.bf4 = self.bias_variable(shape=[self.config.num_classes], name="b_fc4")
 
         conv1 = tf.nn.conv2d(images, self.Wconv1, strides=[1, 1, 1, 1], padding="SAME")
         conv1 = tf.nn.relu(tf.nn.bias_add(conv1, self.bconv1))
