@@ -96,6 +96,7 @@ class Model(object):
             self.second_epoch_count = 0
             self.inside = 0
             while self.second_epoch_count < max_epochs :
+                self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob, self.inside)
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
@@ -107,6 +108,8 @@ class Model(object):
                 self.second_epoch_count += 1
                 self.inside = 1
             _ = sess.run(self.tr_cont_step, feed_dict={self.val_accuracy : reward})
+            self.outputs, self.prob = self.net.neural_search()
+            self.hyperparams = self.net.gen_hyperparams(self.outputs)
             test_loss, test_accuracy = self.run_model_eval(sess, "test", summarizer['test'], tr_step)
             self.epoch_count += 1
         returnDict = {"test_loss" : test_loss, "test_accuracy" : test_accuracy}
