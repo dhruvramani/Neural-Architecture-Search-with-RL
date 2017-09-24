@@ -16,7 +16,7 @@ class Model(object):
         self.summarizer = tf.summary
         self.net = Network(config)
         self.saver = tf.train.Saver()
-        self.inside = 0
+        self.inside = 1
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
