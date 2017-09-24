@@ -7,6 +7,7 @@ from parser import Parser
 from config import Config
 from dataset import DataSet
 from network import Network
+from child_network import ChildNetwork
 
 class Model(object):
     def __init__(self, config):
@@ -16,17 +17,14 @@ class Model(object):
         self.summarizer = tf.summary
         self.net = Network(config)
         self.saver = tf.train.Saver()
-        self.inside = 1
         self.epoch_count, self.second_epoch_count = 0, 0
         self.outputs, self.prob = self.net.neural_search()
         self.hyperparams = self.net.gen_hyperparams(self.outputs)
         self.hype_list = [1 for i in range(self.config.hyperparams)] #[7, 7, 24, 5, 5, 36, 3, 3, 48, 64]
-        self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob, self.inside)
-        self.cross_loss = self.net.model_loss(self.y_pred, self.Y)
-        self.tr_model_step = self.net.train_model(self.cross_loss)
-        self.accuracy = self.net.accuracy(self.y_pred, self.Y)
         self.reinforce_loss = self.net.REINFORCE(self.prob)
         self.tr_cont_step = self.net.train_controller(self.reinforce_loss, self.val_accuracy)
+        self.cNet, self.y_pred = self.init_child(self.hype_list)
+        self.cross_loss, self.accuracy, self.tr_model_step = self.grow_child()
         self.init = tf.global_variables_initializer()
         self.local_init = tf.local_variables_initializer()
 
@@ -35,6 +33,17 @@ class Model(object):
         self.Y = tf.placeholder(tf.float32, shape=[None, 10])
         self.val_accuracy = tf.placeholder(tf.float32)
         self.keep_prob = tf.placeholder(tf.float32)
+
+    def init_child(self, hype_list):
+        cNet = ChildNetwork(hype_list)
+        y_pred = cNet.run_model(self.X, self.keep_prob)
+        return cNet, y_pred
+
+    def grow_child(self)
+        cross_loss = self.cNet.model_loss(self.y_pred, self.Y)
+        accuracy = self.cNet.accuracy(self.y_pred, self.Y)
+        tr_model_step = self.cNet.train_model(self.cross_loss)
+        return cross_loss, accuracy, tr_model_step
 
     def run_model_epoch(self, sess, data, summarizer, epoch):
         X, Y, i, err= None, None, 0, list()
@@ -83,8 +92,11 @@ class Model(object):
         max_epochs = self.config.max_epochs
         self.epoch_count, val_accuracy, reward = 0, 0.0, 1.0
         while self.epoch_count < max_epochs:
-            #if(self.epoch_count != 0):
+            # Creation of new Child Network from new Hyperparameters
             self.hype_list = sess.run(self.hyperparams)
+            self.cNet, self.y_pred = self.init_child(self.hype_list)
+            self.cross_loss, self.accuracy, self.tr_model_step = self.grow_child()
+            
             hyperfoo = {"Filter Row 1": self.hype_list[0], "Filter Column 1": self.hype_list[1], "No Filter 1": self.hype_list[2], "Filter Row 2": self.hype_list[3], "Filter Column 2": self.hype_list[4], "No Filter 2": self.hype_list[5], "Filter Row 3": self.hype_list[6], "Filter Column 3": self.hype_list[7], "No Filter 3": self.hype_list[8], "No Neurons": self.hype_list[9]}
             output = ""
             for key in hyperfoo:
@@ -94,9 +106,7 @@ class Model(object):
             print(sess.run(self.outputs))
             print(output + "\n")
             self.second_epoch_count = 0
-            self.inside = 0
             while self.second_epoch_count < max_epochs :
-                self.y_pred = self.net.construct_model(self.X, self.hype_list, self.keep_prob, self.inside)
                 average_loss, tr_step = self.run_model_epoch(sess, "train", summarizer['train'], self.second_epoch_count)
                 if not self.config.debug:
                     val_loss, val_accuracy = self.run_model_eval(sess, "validation", summarizer['val'], tr_step)
@@ -106,10 +116,7 @@ class Model(object):
                         f.write(output)
                     print(output)
                 self.second_epoch_count += 1
-                self.inside = 1
             _ = sess.run(self.tr_cont_step, feed_dict={self.val_accuracy : reward})
-            self.outputs, self.prob = self.net.neural_search()
-            self.hyperparams = self.net.gen_hyperparams(self.outputs)
             test_loss, test_accuracy = self.run_model_eval(sess, "test", summarizer['test'], tr_step)
             self.epoch_count += 1
         returnDict = {"test_loss" : test_loss, "test_accuracy" : test_accuracy}
