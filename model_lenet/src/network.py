@@ -53,7 +53,7 @@ class Network(object):
 
         return hyperparams
 
-    def construct_model(self, data, hyperparams, keep_prob, inside=0):
+    def construct_model(self, data, hyperparams, keep_prob, inside=1):
         data = tf.expand_dims(data, -1)
         data = tf.expand_dims(data, -1)
         hyperparams = {"filter_row_1": hyperparams[0], "filter_column_1": hyperparams[1], "n_filter_1": hyperparams[2], "filter_row_2": hyperparams[3], "filter_column_2": hyperparams[4], "n_filter_2": hyperparams[5], "filter_row_3": hyperparams[6], "filter_column_3": hyperparams[7], "n_filter_3": hyperparams[8], "n_autoneurons": hyperparams[9]}
