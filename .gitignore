@@ -1,3 +1,3 @@
 data/cifar10_utils
 data/cifar-10
-model/src/__pycache__
+./*/__pycache__
