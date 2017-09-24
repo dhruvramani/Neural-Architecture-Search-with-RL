@@ -59,28 +59,28 @@ class Network(object):
         hyperparams = {"filter_row_1": hyperparams[0], "filter_column_1": hyperparams[1], "n_filter_1": hyperparams[2], "filter_row_2": hyperparams[3], "filter_column_2": hyperparams[4], "n_filter_2": hyperparams[5], "filter_row_3": hyperparams[6], "filter_column_3": hyperparams[7], "n_filter_3": hyperparams[8], "n_autoneurons": hyperparams[9]}
         images = tf.reshape(data, [self.config.batch_size, 32, 32, 3])
         if(inside == 0):
-            self.Wconv1 = self.weight_variable(shape=[hyperparams["filter_row_1"], hyperparams["filter_column_1"], 3, hyperparams["n_filter_1"]], name="kernel_1")
-            self.bconv1 = self.bias_variable(shape=[hyperparams["n_filter_1"]], name="b_conv_1")
-            self.Wconv2 = self.weight_variable(shape=[hyperparams["filter_row_2"], hyperparams["filter_column_2"], hyperparams["n_filter_1"], hyperparams["n_filter_2"]], name="kernel_2")
-            self.bconv2 = self.bias_variable(shape=[hyperparams["n_filter_2"]], name="b_conv_2")
-            self.Wconv3 = self.weight_variable(shape=[hyperparams["filter_row_3"], hyperparams["filter_column_3"], hyperparams["n_filter_2"], hyperparams["n_filter_3"]], name="kernel_3")
-            self.bconv3 = self.bias_variable(shape=[hyperparams["n_filter_3"]], name="b_conv_3")
-            self.bf1 = self.bias_variable(shape=[384], name="b_fc1")
-            self.Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
-            self.bf2 = self.bias_variable(shape=[192], name="b_fc2")
-            self.Wf3 = self.weight_variable(shape=[192, hyperparams["n_autoneurons"]], name="w_fc3")
-            self.bf3 = self.bias_variable(shape=[hyperparams["n_autoneurons"]], name="b_fc3")
-            self.Wf4 = self.weight_variable(shape=[hyperparams["n_autoneurons"], self.config.num_classes], name="w_fc4")
-            self.bf4 = self.bias_variable(shape=[self.config.num_classes], name="b_fc4")
+            Network.Wconv1 = self.weight_variable(shape=[hyperparams["filter_row_1"], hyperparams["filter_column_1"], 3, hyperparams["n_filter_1"]], name="kernel_1")
+            Network.bconv1 = self.bias_variable(shape=[hyperparams["n_filter_1"]], name="b_conv_1")
+            Network.Wconv2 = self.weight_variable(shape=[hyperparams["filter_row_2"], hyperparams["filter_column_2"], hyperparams["n_filter_1"], hyperparams["n_filter_2"]], name="kernel_2")
+            Network.bconv2 = self.bias_variable(shape=[hyperparams["n_filter_2"]], name="b_conv_2")
+            Network.Wconv3 = self.weight_variable(shape=[hyperparams["filter_row_3"], hyperparams["filter_column_3"], hyperparams["n_filter_2"], hyperparams["n_filter_3"]], name="kernel_3")
+            Network.bconv3 = self.bias_variable(shape=[hyperparams["n_filter_3"]], name="b_conv_3")
+            Network.bf1 = self.bias_variable(shape=[384], name="b_fc1")
+            Network.Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
+            Network.bf2 = self.bias_variable(shape=[192], name="b_fc2")
+            Network.Wf3 = self.weight_variable(shape=[192, hyperparams["n_autoneurons"]], name="w_fc3")
+            Network.bf3 = self.bias_variable(shape=[hyperparams["n_autoneurons"]], name="b_fc3")
+            Network.Wf4 = self.weight_variable(shape=[hyperparams["n_autoneurons"], self.config.num_classes], name="w_fc4")
+            Network.bf4 = self.bias_variable(shape=[self.config.num_classes], name="b_fc4")
 
-        conv1 = tf.nn.conv2d(images, self.Wconv1, strides=[1, 1, 1, 1], padding="SAME")
-        conv1 = tf.nn.relu(tf.nn.bias_add(conv1, self.bconv1))
+        conv1 = tf.nn.conv2d(images, Network.Wconv1, strides=[1, 1, 1, 1], padding="SAME")
+        conv1 = tf.nn.relu(tf.nn.bias_add(conv1, Network.bconv1))
         pool1 = tf.nn.max_pool(conv1, [1, 3, 3, 1], [1, 2, 2, 1], padding = 'SAME')        
-        conv2 = tf.nn.conv2d(pool1, self.Wconv2, strides=[1, 1, 1, 1], padding="SAME")
-        conv2 = tf.nn.relu(tf.nn.bias_add(conv2, self.bconv2))
+        conv2 = tf.nn.conv2d(pool1, Network.Wconv2, strides=[1, 1, 1, 1], padding="SAME")
+        conv2 = tf.nn.relu(tf.nn.bias_add(conv2, Network.bconv2))
         pool2 = tf.nn.max_pool(conv2, [1, 3, 3, 1], [1, 2, 2, 1], padding = 'SAME')
-        conv3 = tf.nn.conv2d(pool2, self.Wconv3, strides=[1, 1, 1, 1], padding="SAME")
-        conv3 = tf.nn.relu(tf.nn.bias_add(conv3, self.bconv3))
+        conv3 = tf.nn.conv2d(pool2, Network.Wconv3, strides=[1, 1, 1, 1], padding="SAME")
+        conv3 = tf.nn.relu(tf.nn.bias_add(conv3, Network.bconv3))
         pool3 = tf.nn.max_pool(conv3, [1, 3, 3, 1], [1, 2, 2, 1], padding = 'SAME')
 
         shape = pool3.get_shape().as_list()
@@ -90,11 +90,11 @@ class Network(object):
         reshaped = tf.reshape(pool3, [shape[0], -1])
         dim = reshaped.get_shape()[1].value
         if(inside == 0):
-            self.Wf1 = self.weight_variable(shape=[dim, 384], name="w_fc1")
-        f1 = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.bf1), keep_prob)
-        f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, self.Wf2) + self.bf2), keep_prob)
-        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(f2, self.Wf3) + self.bf3), keep_prob)
-        output = tf.matmul(fc, self.Wf4)+ self.bf4
+            Network.Wf1 = self.weight_variable(shape=[dim, 384], name="w_fc1")
+        f1 = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, Network.Wf1) + Network.bf1), keep_prob)
+        f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, Network.Wf2) + Network.bf2), keep_prob)
+        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(f2, Network.Wf3) + Network.bf3), keep_prob)
+        output = tf.matmul(fc, Network.Wf4)+ Network.bf4
         return output
 
     def model_loss(self, logits, labels):
@@ -102,7 +102,7 @@ class Network(object):
 
     def train_model(self, loss):
         optimizer = self.config.solver.optimizer
-        var_list = [self.Wconv1, self.bconv1, self.Wconv2, self.bconv2, self.Wconv3, self.bconv3, self.Wf1, self.bf1, self.Wf2, self.bf2, self.Wf3, self.bf3, self.Wf4, self.bf4]
+        var_list = [Network.Wconv1, Network.bconv1, Network.Wconv2, Network.bconv2, Network.Wconv3, Network.bconv3, Network.Wf1, Network.bf1, Network.Wf2, Network.bf2, Network.Wf3, Network.bf3, Network.Wf4, Network.bf4]
         return optimizer.minimize(loss, var_list=var_list)
 
     def accuracy(self, logits, labels):
@@ -110,7 +110,7 @@ class Network(object):
 
     def train_controller(self, reinforce_loss, val_accuracy):
         optimizer = self.config.solver.optimizer
-        var_list = [self.Wc, self.bc]
+        var_list = [Network.Wc, Network.bc]
         gradients = optimizer.compute_gradients(loss=reinforce_loss, var_list=var_list)
         for i, (grad, var) in enumerate(gradients):
             if grad is not None:
