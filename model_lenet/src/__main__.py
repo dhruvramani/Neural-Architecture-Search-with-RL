@@ -35,15 +35,15 @@ class Model(object):
         self.keep_prob = tf.placeholder(tf.float32)
 
     def init_child(self, hype_list):
-        cNet = ChildNetwork(config, hype_list)
+        cNet = ChildNetwork(self.config, hype_list)
         y_pred = cNet.run_model(self.X, self.keep_prob)
         return cNet, y_pred
 
     def grow_child(self):
-        cross_loss = self.cNet.model_loss(self.y_pred, self.Y)
-        accuracy = self.cNet.accuracy(self.y_pred, self.Y)
-        tr_model_step = self.cNet.train_model(self.cross_loss)
-        return cross_loss, accuracy, tr_model_step
+        self.cross_loss = self.cNet.model_loss(self.y_pred, self.Y)
+        self.accuracy = self.cNet.accuracy(self.y_pred, self.Y)
+        self.tr_model_step = self.cNet.train_model(self.cross_loss)
+        return self.cross_loss, self.accuracy, self.tr_model_step
 
     def run_model_epoch(self, sess, data, summarizer, epoch):
         X, Y, i, err= None, None, 0, list()
@@ -94,9 +94,6 @@ class Model(object):
         while self.epoch_count < max_epochs:
             # Creation of new Child Network from new Hyperparameters
             self.hype_list = sess.run(self.hyperparams)
-            self.cNet, self.y_pred = self.init_child(self.hype_list)
-            self.cross_loss, self.accuracy, self.tr_model_step = self.grow_child()
-
             hyperfoo = {"Filter Row 1": self.hype_list[0], "Filter Column 1": self.hype_list[1], "No Filter 1": self.hype_list[2], "Filter Row 2": self.hype_list[3], "Filter Column 2": self.hype_list[4], "No Filter 2": self.hype_list[5], "Filter Row 3": self.hype_list[6], "Filter Column 3": self.hype_list[7], "No Filter 3": self.hype_list[8], "No Neurons": self.hype_list[9]}
             output = ""
             for key in hyperfoo:
@@ -119,6 +116,8 @@ class Model(object):
             _ = sess.run(self.tr_cont_step, feed_dict={self.val_accuracy : reward})
             test_loss, test_accuracy = self.run_model_eval(sess, "test", summarizer['test'], tr_step)
             self.epoch_count += 1
+            self.cNet, self.y_pred = self.init_child(self.hype_list)
+            self.cross_loss, self.accuracy, self.tr_model_step = self.grow_child()
         returnDict = {"test_loss" : test_loss, "test_accuracy" : test_accuracy}
         self.saver.save(sess, self.config.ckptdir_path + "/model_best.ckpt")        
         return returnDict

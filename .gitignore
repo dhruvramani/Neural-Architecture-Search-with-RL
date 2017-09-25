@@ -1,3 +1,6 @@
 data/cifar10_utils
 data/cifar-10
-./*/__pycache__
+model_lenet/src/__pycache__
+model_lenet/bin/
+model_conv/src/__pycache__
+mode_conv/bin/
