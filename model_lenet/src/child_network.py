@@ -34,7 +34,7 @@ class ChildNetwork(object):
         bf1 = self.bias_variable(shape=[384], name="b_fc1")
         Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
         bf2 = self.bias_variable(shape=[192], name="b_fc2")
-        Wf3 = self.weight_variable(shape=[192, self.hyperparams["n_autoneurons"]], name="w_fc3")
+        Wf3 = self.weight_variable(shape=[dim, self.hyperparams["n_autoneurons"]], name="w_fc3")
         bf3 = self.bias_variable(shape=[self.hyperparams["n_autoneurons"]], name="b_fc3")
         Wf4 = self.weight_variable(shape=[self.hyperparams["n_autoneurons"], self.config.num_classes], name="w_fc4")
         bf4 = self.bias_variable(shape=[self.config.num_classes], name="b_fc4")
@@ -62,9 +62,9 @@ class ChildNetwork(object):
 
     def run_model(self, data, keep_prob):
         _, reshaped = self.run_cnn(data, keep_prob)
-        f1 = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.bf1), keep_prob)
-        f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, self.Wf2) + self.bf2), keep_prob)
-        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(f2, self.Wf3) + self.bf3), keep_prob)
+        #f1 = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.bf1), keep_prob)
+        #f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, self.Wf2) + self.bf2), keep_prob)
+        fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf3) + self.bf3), keep_prob)
         output = tf.matmul(fc, self.Wf4)+ self.bf4
         return output
 
