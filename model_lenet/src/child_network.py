@@ -27,7 +27,10 @@ class ChildNetwork(object):
         return Wconv1, bconv1, Wconv2, bconv2, Wconv3, bconv3
 
     def init_fc_vars(self):
-        Wf1 = self.weight_variable(shape=[16, 384], name="w_fc1")
+        data = np.zeros((self.config.batch_size, 32*32*3), dtype=np.float32)
+        keep_prob = 0.5
+        dim, _ =  self.run_cnn(data, keep_prob)
+        Wf1 = self.weight_variable(shape=[dim, 384], name="w_fc1")
         bf1 = self.bias_variable(shape=[384], name="b_fc1")
         Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
         bf2 = self.bias_variable(shape=[192], name="b_fc2")
@@ -37,7 +40,7 @@ class ChildNetwork(object):
         bf4 = self.bias_variable(shape=[self.config.num_classes], name="b_fc4")
         return Wf1, bf1, Wf2, bf2, Wf3, bf3, Wf4, bf4
 
-    def run_model(self, data, keep_prob):
+    def run_cnn(self, data, keep_prob):
         data = tf.expand_dims(data, -1)
         data = tf.expand_dims(data, -1)
         images = tf.reshape(data, [self.config.batch_size, 32, 32, 3])
@@ -55,7 +58,10 @@ class ChildNetwork(object):
         shape = pool3.get_shape().as_list()
         reshaped = tf.reshape(pool3, [shape[0], -1])
         dim = reshaped.get_shape()[1].value
-        self.Wf1 = self.weight_variable(shape=[dim, 384], name="w_fc1")
+        return dim, reshaped
+
+    def run_model(self, data, keep_prob):
+        _, reshaped = self.run_cnn(data, keep_prob)
         f1 = tf.nn.dropout(utils.leaky_relu(tf.matmul(reshaped, self.Wf1) + self.bf1), keep_prob)
         f2 = tf.nn.dropout(utils.leaky_relu(tf.matmul(f1, self.Wf2) + self.bf2), keep_prob)
         fc = tf.nn.dropout(utils.leaky_relu(tf.matmul(f2, self.Wf3) + self.bf3), keep_prob)
