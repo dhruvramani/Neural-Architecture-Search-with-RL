@@ -27,7 +27,7 @@ class ChildNetwork(object):
         return Wconv1, bconv1, Wconv2, bconv2, Wconv3, bconv3
 
     def init_fc_vars(self):
-        dim = # Caluclate
+        dim = 16
         Wf1 = self.weight_variable(shape=[dim, 384], name="w_fc1")
         bf1 = self.bias_variable(shape=[384], name="b_fc1")
         Wf2 = self.weight_variable(shape=[384, 192], name="w_fc2")
