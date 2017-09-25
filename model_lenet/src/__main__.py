@@ -39,7 +39,7 @@ class Model(object):
         y_pred = cNet.run_model(self.X, self.keep_prob)
         return cNet, y_pred
 
-    def grow_child(self)
+    def grow_child(self):
         cross_loss = self.cNet.model_loss(self.y_pred, self.Y)
         accuracy = self.cNet.accuracy(self.y_pred, self.Y)
         tr_model_step = self.cNet.train_model(self.cross_loss)
@@ -96,7 +96,7 @@ class Model(object):
             self.hype_list = sess.run(self.hyperparams)
             self.cNet, self.y_pred = self.init_child(self.hype_list)
             self.cross_loss, self.accuracy, self.tr_model_step = self.grow_child()
-            
+
             hyperfoo = {"Filter Row 1": self.hype_list[0], "Filter Column 1": self.hype_list[1], "No Filter 1": self.hype_list[2], "Filter Row 2": self.hype_list[3], "Filter Column 2": self.hype_list[4], "No Filter 2": self.hype_list[5], "Filter Row 3": self.hype_list[6], "Filter Column 3": self.hype_list[7], "No Filter 3": self.hype_list[8], "No Neurons": self.hype_list[9]}
             output = ""
             for key in hyperfoo:
