@@ -35,7 +35,7 @@ class Model(object):
         self.keep_prob = tf.placeholder(tf.float32)
 
     def init_child(self, hype_list):
-        cNet = ChildNetwork(hype_list)
+        cNet = ChildNetwork(config, hype_list)
         y_pred = cNet.run_model(self.X, self.keep_prob)
         return cNet, y_pred
 
