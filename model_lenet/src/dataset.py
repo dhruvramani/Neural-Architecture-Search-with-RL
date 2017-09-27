@@ -30,7 +30,7 @@ class DataSet(object):
             return self.load_data(self.config.train_path + "5")
 
     def next_batch(self, type_):
-        if self.batch_count > self.config.batch_size:
+        if self.batch_count > 4:
             self.batch_count = 1
         X, Y = self.get_batch(type_)
         start, batch_size, tot = 0, self.config.batch_size, len(X)
