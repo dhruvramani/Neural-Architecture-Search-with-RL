@@ -43,7 +43,10 @@ def father_network():
             no_hidden, lr = hidden_layers[hyp[0]], learning_rates[hyp[1]]
             val_acc = train_network(no_hidden, lr)
             print("\nController Loss : {}".format(sess.run(loss)))
-            print("Accuracy : {}, Learning Rate : {}, Hidden Number : {}".format(val_acc, lr, no_hidden))
+            output = "Accuracy : {}, Learning Rate : {}, Hidden Number : {}\n".format(val_acc, lr, no_hidden)
+            with open("accuracy.log", "a+") as f:
+                f.write(output)
+            print(output)
             _ = sess.run(train, feed_dict = {val_accuracy : val_acc})
             hyp = sess.run(hyperparams)
 
