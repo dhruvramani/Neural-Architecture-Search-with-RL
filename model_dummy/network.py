@@ -42,8 +42,8 @@ def father_network():
             hyp = [np.argmax(hyp[0, i, :]) for i in range(timesteps)]
             no_hidden, lr = hidden_layers[hyp[0]], learning_rates[hyp[1]]
             val_acc = train_network(no_hidden, lr)
-            print("\nController Loss : {}".format(sess.run(loss)))
-            output = "Accuracy : {}, Learning Rate : {}, Hidden Number : {}\n".format(val_acc, lr, no_hidden)
+            output = "\nController Loss : {}\n".format(sess.run(loss))
+            output += "Accuracy : {}, Learning Rate : {}, Hidden Number : {}\n".format(val_acc, lr, no_hidden)
             with open("accuracy.log", "a+") as f:
                 f.write(output)
             print(output)
