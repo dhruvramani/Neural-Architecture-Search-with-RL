@@ -6,3 +6,4 @@ model_lenet/stdout/
 model_conv/stdout/
 model_conv/src/__pycache__/*
 mode_conv/bin/
+model_dummy/accuracy.log
