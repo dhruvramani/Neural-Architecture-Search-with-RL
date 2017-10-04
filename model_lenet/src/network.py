@@ -9,7 +9,7 @@ class Network(object):
         self.config = config
         self.n_steps = self.config.hyperparams
         self.n_input, self.n_hidden =  4, 2
-        self.state = tf.Variable(tf.zeros(shape=[1, 4]))
+        self.state = tf.Variable(tf.random_normal(shape=[1, 4]))
         self.lstm = tf.contrib.rnn.BasicLSTMCell(self.n_hidden, forget_bias=1.0, state_is_tuple=False)
         self.Wc, self.bc = self.init_controller_vars()
     
@@ -25,7 +25,7 @@ class Network(object):
         return Wc, bc
 
     def neural_search(self):
-        inp = tf.constant(np.zeros((1, 4), dtype="float32"))
+        inp = tf.constant(np.ones((1, 4), dtype="float32"))
         output = list()
         for _ in range(self.n_steps):
             inp, self.state = self.lstm(inp, self.state)
