@@ -37,7 +37,7 @@ def father_network():
         sess.run(tf.global_variables_initializer())
         hyp = np.ones((1, timesteps, classes))
         print("\n\n")
-        for i in range(500):
+        for i in range(10000):
             print("RL {}".format(i))
             hyp = [np.argmax(hyp[0, i, :]) for i in range(timesteps)]
             no_hidden, lr = hidden_layers[hyp[0]], learning_rates[hyp[1]]
