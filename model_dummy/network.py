@@ -19,7 +19,7 @@ def father_network():
     inp = tf.placeholder(tf.float32, shape=[1, timesteps, inputdim])
     X = LSTM(classes, return_sequences=True)(inp)
 
-    hyperparams = Dense(classes, activation='softmax')(X) # [1, timesteps, classes]
+    hyperparams = Dense(classes, activation='softmax', kernel_regularizer=regularizers.l2(0.01))(X) # [1, timesteps, classes]
     loss = - tf.reduce_mean(tf.log(1e-10 + hyperparams))
     val_accuracy = tf.placeholder_with_default(10.0, shape=())
     
