@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import tensorflow as tf
 from keras.layers import LSTM
@@ -6,7 +5,6 @@ from keras import backend as K
 from keras.layers import Embedding
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from tensorflow.examples.tutorials.mnist import input_data
 
