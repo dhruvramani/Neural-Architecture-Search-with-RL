@@ -8,21 +8,19 @@ from keras.layers import Dense, Dropout
 
 from tensorflow.examples.tutorials.mnist import input_data
 
+inputdim, timesteps, classes =  4, 2, 4
 mnist = input_data.read_data_sets("MNIST_data/" , one_hot = True)
 
-#def train_rl(loss, father_lr, val_accuracy):
-
 def father_network():
-    father_lr = 0.01
-    inputdim, timesteps, classes =  4, 2, 4
-    inp = tf.constant(np.random.random((1, timesteps, inputdim)).astype(np.float32))
+    father_lr = 10.0
+    inp = tf.placeholder(tf.float32, shape=[1, timesteps, inputdim])
     X = LSTM(classes, return_sequences=True)(inp)
 
-    hyperparams = Dense(classes, activation='softmax')(X) # [1, 2, 4]
-    loss = tf.reduce_mean(tf.log(hyperparams))
+    hyperparams = Dense(classes, activation='softmax')(X) # [1, timesteps, classes]
+    loss = - tf.reduce_mean(tf.log(hyperparams))
     val_accuracy = tf.placeholder_with_default(10.0, shape=())
     
-    optimizer = tf.train.GradientDescentOptimizer(father_lr)
+    optimizer = tf.train.RMSPropOptimizer(father_lr)
     gradients = optimizer.compute_gradients(loss=loss)
     for i, (grad, var) in enumerate(gradients):
         if grad is not None:
@@ -32,23 +30,27 @@ def father_network():
     hidden_layers = [100, 300, 600, 900]
     learning_rates = [0.01, 0.1, 1.0, 3.0]
     
+    hyp = np.random.random((1, timesteps, inputdim)).astype(np.float32)
     with tf.Session() as sess:
         K.set_session(sess)
         sess.run(tf.global_variables_initializer())
-        hyp = np.ones((1, timesteps, classes))
         print("\n\n")
         for i in range(10000):
-            print("RL {}".format(i))
-            hyp = [np.argmax(hyp[0, i, :]) for i in range(timesteps)]
-            no_hidden, lr = hidden_layers[hyp[0]], learning_rates[hyp[1]]
+            print("Controller Epoch # {}".format(i))
+            print(hyp)
+            input(" ")
+            out = [np.argmax(hyp[0, i, :]) for i in range(timesteps)]
+            no_hidden, lr = hidden_layers[out[0]], learning_rates[out[1]]
             val_acc = train_network(no_hidden, lr)
-            output = "\nController Loss : {}\n".format(sess.run(loss))
+            output = "\nController Loss : {}\n".format(sess.run(loss, feed_dict={inp: hyp}))
             output += "Accuracy : {}, Learning Rate : {}, Hidden Number : {}\n".format(val_acc, lr, no_hidden)
             with open("accuracy.log", "a+") as f:
                 f.write(output)
             print(output)
-            _ = sess.run(train, feed_dict = {val_accuracy : val_acc})
-            hyp = sess.run(hyperparams)
+            hyp = np.roll(hyp, 1, axis=1)
+            _ = sess.run(train, feed_dict = {val_accuracy : val_acc, inp:hyp})
+            hyp = sess.run(hyperparams, feed_dict={inp : hyp})
+            # Remove last one and pad the start by 1
 
 def train_network(no_hidden=600, learning_rate=3.0):
     no_input, no_output = 784, 10
