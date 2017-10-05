@@ -2,6 +2,7 @@ import os
 import numpy as np
 import tensorflow as tf
 from keras.layers import LSTM
+from keras import regularizers
 from keras import backend as K
 from keras.layers import Embedding
 from keras.models import Sequential
