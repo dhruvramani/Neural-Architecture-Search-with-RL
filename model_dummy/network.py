@@ -18,8 +18,8 @@ mnist = input_data.read_data_sets("MNIST_data/" , one_hot = True)
 def father_network():
     father_lr = 7.0
     inp = tf.placeholder(tf.float32, shape=[1, timesteps, inputdim])
-    X = LSTM(classes, return_sequences=True)(inp)
-
+    X = LSTM(32, return_sequences=True)(inp)
+    X = LSTM(classes, return_sequences=True)(X)
     hyperparams = Dense(classes, activation='softmax', kernel_regularizer=regularizers.l2(0.01))(X) # [1, timesteps, classes]
     loss = - tf.reduce_mean(tf.log(1e-10 + hyperparams))
     val_accuracy = tf.placeholder_with_default(10.0, shape=())
