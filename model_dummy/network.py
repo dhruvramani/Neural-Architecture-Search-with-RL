@@ -30,7 +30,7 @@ def father_network():
             gradients[i] = (grad * val_accuracy, var)
     train = optimizer.apply_gradients(gradients)
     
-    hidden_layers = [100, 300, 600, 900]
+    hidden_layers = [900, 600, 300, 100]
     learning_rates = [0.01, 0.1, 1.0, 3.0]
     
     hyp = np.random.random((1, timesteps, inputdim)).astype(np.float32)
