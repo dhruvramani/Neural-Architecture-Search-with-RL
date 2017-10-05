@@ -15,7 +15,7 @@ inputdim, timesteps, classes =  4, 2, 4
 mnist = input_data.read_data_sets("MNIST_data/" , one_hot = True)
 
 def father_network():
-    father_lr = 10.0
+    father_lr = 7.0
     inp = tf.placeholder(tf.float32, shape=[1, timesteps, inputdim])
     X = LSTM(classes, return_sequences=True)(inp)
 
@@ -49,7 +49,7 @@ def father_network():
                 f.write(output)
             print(output)
             hyp = np.roll(hyp, 1, axis=1)
-            _ = sess.run(train, feed_dict = {val_accuracy : val_acc, inp:hyp})
+            _ = sess.run(train, feed_dict = {val_accuracy : val_acc ** 3, inp:hyp})
             hyp = sess.run(hyperparams, feed_dict={inp : hyp})
             # Remove last one and pad the start by 1
 
