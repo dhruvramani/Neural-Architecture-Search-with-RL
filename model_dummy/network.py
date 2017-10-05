@@ -37,8 +37,6 @@ def father_network():
         print("\n\n")
         for i in range(10000):
             print("Controller Epoch # {}".format(i))
-            print(hyp)
-            input(" ")
             out = [np.argmax(hyp[0, i, :]) for i in range(timesteps)]
             no_hidden, lr = hidden_layers[out[0]], learning_rates[out[1]]
             val_acc = train_network(no_hidden, lr)
