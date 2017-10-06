@@ -51,7 +51,7 @@ def father_network():
                 f.write(output)
             print(output)
             hyp = np.roll(hyp, 1, axis=1)
-            hyp[0, 0, :] = np.random.random((1, inputdim))
+            hyp[0, 0, :] = np.random.random((1, inputdim)).astype(np.float32)
             _ = sess.run(train, feed_dict = {val_accuracy : val_acc ** 3, inp:hyp})
             hyp = sess.run(hyperparams, feed_dict={inp : hyp})
             # Remove last one and pad the start by 1
