@@ -12,7 +12,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from tensorflow.examples.tutorials.mnist import input_data
 
-inputdim, timesteps, classes =  4, 2, 4
+inputdim, timesteps, classes =  4, 10, 4
 mnist = input_data.read_data_sets("MNIST_data/" , one_hot = True)
 
 def father_network():
@@ -42,6 +42,7 @@ def father_network():
         for i in range(10000):
             print("Controller Epoch # {}".format(i))
             out = [np.argmax(hyp[0, i, :]) for i in range(timesteps)]
+            print("{}\n\n".format(out))
             no_hidden, lr = hidden_layers[out[0]], learning_rates[out[1]]
             val_acc = train_network(no_hidden, lr)
             output = "\nController Loss : {}\n".format(sess.run(loss, feed_dict={inp: hyp}))
