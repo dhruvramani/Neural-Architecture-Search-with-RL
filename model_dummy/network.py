@@ -12,7 +12,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from tensorflow.examples.tutorials.mnist import input_data
 
-inputdim, timesteps, classes =  4, 10, 4
+inputdim, timesteps, classes =  11, 11, 11
 mnist = input_data.read_data_sets("MNIST_data/" , one_hot = True)
 
 def father_network():
@@ -31,8 +31,8 @@ def father_network():
             gradients[i] = (grad * val_accuracy, var)
     train = optimizer.apply_gradients(gradients)
     
-    hidden_layers = [900, 600, 300, 100]
-    learning_rates = [0.01, 0.1, 1.0, 3.0]
+    hidden_layers = [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900]
+    learning_rates = [0.0001, 0.0006, 0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1.0, 3.0, 6.0]
     
     hyp = np.random.random((1, timesteps, inputdim)).astype(np.float32)
     with tf.Session() as sess:
