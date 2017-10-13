@@ -12,16 +12,22 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from tensorflow.examples.tutorials.mnist import input_data
 
-inputdim, timesteps, classes =  11, 11, 11
+inputdim, timesteps, classes =  11, 10, 11
 mnist = input_data.read_data_sets("MNIST_data/" , one_hot = True)
+
+def scale_features(hyp):
+    for i in range(timesteps):
+        hyp[0, i, :] = (hyp[0, i, :] - np.mean(hyp[0, i, :])) / (hyp[0, i, :].max() - hyp[0, i, :].min())
+    return hyp 
 
 def father_network():
     father_lr = 7.0
     inp = tf.placeholder(tf.float32, shape=[1, timesteps, inputdim])
-    X = LSTM(32, return_sequences=True)(inp)
+    X = LSTM(35, return_sequences=True)(inp)
     X = LSTM(classes, return_sequences=True)(X)
     hyperparams = Dense(classes, activation='softmax', kernel_regularizer=regularizers.l2(0.01))(X) # [1, timesteps, classes]
-    loss = - tf.reduce_mean(tf.log(1e-10 + hyperparams))
+    outza = tf.cast(tf.convert_to_tensor([tf.argmax(hyperparams[0, i, :]) for i in range(timesteps)]), tf.float32)
+    loss = - tf.reduce_mean(tf.log(1e-10 + hyperparams)) - tf.square(tf.reduce_mean(outza - tf.reduce_mean(outza)))
     val_accuracy = tf.placeholder_with_default(10.0, shape=())
     
     optimizer = tf.train.RMSPropOptimizer(father_lr)
@@ -51,7 +57,7 @@ def father_network():
                 f.write(output)
             print(output)
             hyp = np.roll(hyp, 1, axis=1)
-            hyp[0, 0, :] = np.random.random((1, inputdim)).astype(np.float32)
+            hyp = scale_features(hyp)
             _ = sess.run(train, feed_dict = {val_accuracy : val_acc ** 3, inp:hyp})
             hyp = sess.run(hyperparams, feed_dict={inp : hyp})
             # Remove last one and pad the start by 1
