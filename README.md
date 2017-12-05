@@ -1,4 +1,5 @@
 # Neural Architecture Search with Reinforcement Learning
+> `model_lenet` and `model_dummy` have different code. Check out `model_lenet` for better explanation.
 ## Dataset
 
 The following model was trained on the CIFAR-10 dataset. To get the data and data-prep. related filed contact me.
